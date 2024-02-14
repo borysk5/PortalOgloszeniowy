@@ -1,0 +1,15 @@
+﻿@inject Microsoft.AspNetCore.Identity.SignInManager<PortalOgloszeniowy.Models.User> signInManager
+@if (signInManager.IsSignedIn(User))
+{
+    <div class="nav-item"><a class="nav-link" asp-controller="User" asp-action="Details" asp-route-id="@User.Identity.Name">Hello, @User.Identity.Name!</a></div>
+    <div class="nav-item"><a class="nav-link" asp-controller="User" asp-action="Logout"><b>Wyloguj</b></a></div>
+}
+else
+{
+    <div class="nav-item"><a class="nav-link" asp-controller="User" asp-action="Login"><b>Zaloguj</b></a></div>
+    <div class="nav-item"><a class="nav-link" asp-controller="User" asp-action="Create"><b>Zarejestruj</b></a></div>
+        <div class="nav-item">
+        <a class="nav-link" asp-controller="User" asp-action="ExternalLogin" asp-route-provider="Google">Zaloguj się zzz Google</a>
+    </div>
+}
+

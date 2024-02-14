@@ -1,0 +1,18 @@
+﻿
+@model PortalOgloszeniowy.Models.LoginUser
+
+<h1>Confirm External Login</h1>
+
+<p>Please confirm your external login:</p>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div>
+        <label asp-for="Password"></label>
+        <input asp-for="Password" />
+        <span asp-validation-for="Password"></span>
+    </div>
+    
+    <button type="submit">Confirm</button>
+}

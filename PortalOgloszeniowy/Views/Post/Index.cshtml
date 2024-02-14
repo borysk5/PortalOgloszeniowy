@@ -1,0 +1,71 @@
+﻿@model IEnumerable<PortalOgloszeniowy.Models.Post>
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index - POSTS</h1>
+<a asp-action="Create">DODAJ</a>
+@if (Model.Count() > 0)
+{
+    <div>
+        <span>
+            <label asp-for="First().Id"></label>
+        </span>
+        <span>
+            <label asp-for="First().Title"></label>
+        </span>
+        <span>
+            <label asp-for="First().UpVotes"></label>
+        </span>
+        <span>
+            <label asp-for="First().Date"></label>
+        </span>
+        <span>
+            <label asp-for="First().Tags"></label>
+        </span>
+        <span>
+            <label asp-for="First().Comments"></label>
+        </span>
+    </div>
+    @foreach (var item in Model.Reverse())
+    {
+        <div>
+            <span>
+                @item.Id
+            </span>
+            <span>
+                <a asp-action="Details" asp-route-id="@item.Id">
+                    @item.Title
+                </a>
+            </span>
+            <span>
+                @item.UpVotes
+            </span>
+            <span>
+                @item.Date
+            </span>
+            @inject Microsoft.AspNetCore.Identity.SignInManager<PortalOgloszeniowy.Models.User> signInManager
+            @if (signInManager.IsSignedIn(User))
+            {
+                <span>
+                    <a asp-controller="Comment" asp-action="Create" asp-route-id="@item.Id">ADD A COMENT</a>
+                </span>
+                //DELETE THIS CONDITION IF SLOW LOADING
+                @inject Microsoft.AspNetCore.Identity.UserManager<PortalOgloszeniowy.Models.User> Manager
+                bool UserIsOwner = Manager.FindByNameAsync(User.Identity.Name).Result.Posts.ToList().Find(p => p.Id == item.Id) != null;
+                if ( UserIsOwner || User.IsInRole("admin") || User.IsInRole("mod") )
+                {
+                    if (UserIsOwner)
+                    {
+                    <span>
+                        <a asp-action="Edit" asp-route-id="@item.Id">EDIT</a>
+                    </span>
+                    }
+                    <span>
+                        <a class="btn-danger" asp-action="Delete" asp-route-id="@item.Id">DELETE</a>
+                    </span>
+                }
+            }
+        </div>
+    }
+}

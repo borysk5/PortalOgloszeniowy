@@ -1,0 +1,41 @@
+﻿@model PortalOgloszeniowy.Models.RegisterUser
+@{
+    ViewData["Title"] = "Delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Delete - USER</h1>
+<div>
+    <span>
+        <a asp-action="Index" asp-controller="User" asp-route-id="@Model.Id">Powrót</a>
+    </span>
+</div>
+@inject Microsoft.AspNetCore.Identity.SignInManager<PortalOgloszeniowy.Models.User> signInManager
+@if (signInManager.IsSignedIn(User) && User.Identity.Name == Model.UserName)
+{
+    <div asp-validation-summary="All"></div>
+    <form method="post" asp-action="Delete">
+        <label asp-for="UserName"></label>
+        <input asp-for="UserName" disabled />
+        <span asp-validation-for="UserName"></span>
+        <label asp-for="Email"></label>
+        <input asp-for="Email" disabled />
+        <span asp-validation-for="Email"></span>
+        <label asp-for="PhoneNumber"></label>
+        <input asp-for="PhoneNumber" disabled />
+        <span asp-validation-for="PhoneNumber"></span>
+        <label asp-for="PasswordRequired"></label>
+        <input asp-for="PasswordRequired" />
+        <span asp-validation-for="PasswordRequired"></span>
+        <input type="submit" value="Delete" />
+    </form>
+}
+else
+{
+    <div>You can't edit this account</div>
+}
+@section Scripts{
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}

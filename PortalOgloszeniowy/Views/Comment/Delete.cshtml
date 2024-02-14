@@ -1,0 +1,24 @@
+﻿@model PortalOgloszeniowy.Models.Comment
+@{
+    ViewData["Title"] = "Delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h1>Delete - COMMENT</h1>
+<div>
+    <span>
+        <a asp-action="Index" asp-controller="Comment" asp-route-id="@Model.Id">Powrót</a>
+    </span>
+</div>
+<div asp-validation-summary="All"></div>
+<form method="post" asp-action="Delete">
+    <label asp-for="Text"></label>
+    <input asp-for="Text" disabled />
+    <span asp-validation-for="Text"></span>
+    <input type="submit" value="Delete" />
+</form>
+
+@section Scripts{
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}

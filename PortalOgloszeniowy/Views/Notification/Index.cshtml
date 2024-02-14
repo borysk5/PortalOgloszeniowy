@@ -1,0 +1,16 @@
+﻿@model IEnumerable<PortalOgloszeniowy.Models.Notification>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Index - Notification</h1>
+@if (Model != null)
+{
+    @foreach (var not in Model)
+    {
+<span> @not.Id, @not.Date, @Html.Raw(@not.Text) </span><a asp-action="Delete" asp-route-id="@not.Id" asp> DELETE </a>
+        <br />
+    }
+}
+

@@ -1,0 +1,35 @@
+﻿@model PortalOgloszeniowy.Models.Post
+@{
+    ViewData["Title"] = "Delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Delete - POST</h1>
+<div>
+    <span>
+        <a asp-action="Details" asp-controller="Post" asp-route-id="@Model.Id">Powrót</a>
+    </span>
+</div>
+@if (Model != null)
+{
+    @inject Microsoft.AspNetCore.Identity.UserManager<PortalOgloszeniowy.Models.User> Manager
+    bool IsPostOwner = Manager.FindByNameAsync(User.Identity.Name).Result.Posts.ToList().Find(p => p.Id == Model.Id) != null;
+    @if (User != null && (User.IsInRole("mod") || User.IsInRole("admin") || IsPostOwner))
+    {
+        <div asp-validation-summary="All"></div>
+        <form method="post" asp-action="Delete">
+            <label asp-for="Title"></label>
+            <input asp-for="Title" disabled />
+            <span asp-validation-for="Title"></span>
+            <label asp-for="Text"></label>
+            <input asp-for="Text" disabled />
+            <span asp-validation-for="Text"></span>
+            <input type="submit" value="Delete" />
+        </form>
+    }
+}
+@section Scripts{
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}

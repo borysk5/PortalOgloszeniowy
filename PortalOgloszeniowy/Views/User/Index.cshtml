@@ -1,0 +1,109 @@
+﻿@model IEnumerable<PortalOgloszeniowy.Models.User>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Index - USERS</h1>
+<div asp-validation-summary="All"></div>
+@inject Microsoft.AspNetCore.Identity.SignInManager<PortalOgloszeniowy.Models.User> signInManager
+@if (Model.Count() > 0 && signInManager.IsSignedIn(User) && (User.IsInRole("admin") || User.IsInRole("mod")))
+{
+    <div>
+        <span>
+            <label asp-for="First().Id"></label>
+        </span>
+        <span>
+            <label asp-for="First().Email"></label>
+        </span>
+        <span>
+            <label asp-for="First().UserName"></label>
+        </span>
+        <span>
+            <label asp-for="First().PhoneNumber"></label>
+        </span>
+        <span>
+            <label asp-for="First().Ban"></label>
+        </span>
+        <span>
+            <label asp-for="First().Posts"></label>
+        </span>
+        <span>
+            <label asp-for="First().Comments"></label>
+        </span>
+        <span>
+            <a asp-action="Create">DODAJ</a>
+        </span>
+    </div>
+    @foreach (var item in Model)
+    {
+        <div>
+            <span>
+                @item.Id
+            </span>
+            <span>
+                @item.Email
+            </span>
+            <span>
+                @item.UserName
+            </span>
+            <span>
+                @item.PhoneNumber
+            </span>
+            <span>
+                @item.Ban
+            </span>
+            <span>Roles:
+                @inject Microsoft.AspNetCore.Identity.UserManager<PortalOgloszeniowy.Models.User> userManager
+                @foreach (var role in await userManager.GetRolesAsync(await userManager.FindByNameAsync(item.UserName)))
+                {
+                    <span>@role,</span>
+                }
+            </span>
+            <span>
+                Posty:
+                @if (item.Posts != null)
+                    @foreach (var obj in item.Posts)
+                    {
+                        @obj.Title @(",")
+                    }
+            </span>
+            <span>
+                Komentarze:
+                @if (item.Comments != null)
+                    @foreach (var obj in item.Comments)
+                    {
+                        @obj.Text @(",")
+                    }
+            </span>
+
+            @if (User.IsInRole("mod") || User.IsInRole("admin"))
+            {
+                @if (item.UserName != "Admin") {
+                <span>
+                    <a asp-action="Ban" asp-route-name="@item.UserName">BLOKUJ</a>
+                </span>
+                <span>
+                    <a asp-action="Unban" asp-route-name="@item.UserName">ODBLOKUJ</a>
+                </span>
+                }
+                @if (User.IsInRole("admin"))
+                {
+                    <span>
+                        <a asp-action="Delete" asp-route-Id="@item.Id">USUN</a>
+                    </span>
+                    <span>
+                        <a asp-action="Edit" asp-route-Id="@item.Id">EDYTUJ</a>
+                    </span>
+                    <span>
+                        <a asp-action="ModGrant" asp-route-name="@item.UserName">Grant Moderator</a>
+                    </span>
+                    <span>
+                        <a asp-action="ModRevoke" asp-route-name="@item.UserName">Revoke Moderator</a>
+                    </span>
+                }
+            }
+
+        </div>
+    }
+}

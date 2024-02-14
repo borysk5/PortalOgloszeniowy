@@ -1,0 +1,82 @@
+﻿@model PortalOgloszeniowy.Models.User
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Details - USER</h1>
+
+<div asp-validation-summary="All"></div>
+@if (Model != null)
+{
+    <div>
+        <span>
+            <label asp-for="Id"></label>
+        </span>
+        <span>
+            <label asp-for="Email"></label>
+        </span>
+        <span>
+            <label asp-for="UserName"></label>
+        </span>
+        <span>
+            <label asp-for="PhoneNumber"></label>
+        </span>
+        <span>
+            <label asp-for="Ban"></label>
+        </span>
+        <span>
+            <label asp-for="Posts"></label>
+        </span>
+        <span>
+            <label asp-for="Comments"></label>
+        </span>
+        <div>
+            <span>
+                @Model.Id
+            </span>
+            <span>
+                @Model.Email
+            </span>
+            <span>
+                @Model.UserName
+            </span>
+            <span>
+                @Model.PhoneNumber
+            </span>
+            <span>
+                @Model.Ban
+            </span>
+            <span>
+                Posty:
+                @if (Model.Posts != null)
+                    @foreach (var obj in Model.Posts)
+                    {
+                        @obj.Title @(",")
+                        }
+            </span>
+            <span>
+                Komentarze:
+                @if (Model.Comments != null)
+                    @foreach (var obj in Model.Comments)
+                    {
+                        @obj.Text @(",")
+                        }
+            </span>
+            @inject Microsoft.AspNetCore.Identity.SignInManager<PortalOgloszeniowy.Models.User> signInManager
+            @if (signInManager.IsSignedIn(User) && User.Identity.Name == Model.UserName)
+            {
+                <span>
+                    <a asp-action="Delete" asp-route-Id="@Model.Id">USUN</a>
+                </span>
+                <span>
+                    <a asp-action="Edit" asp-route-Id="@Model.Id">EDYTUJ</a>
+                </span>
+            }
+        </div>
+    </div>
+}
+else
+{
+    <div>User not found</div>
+}

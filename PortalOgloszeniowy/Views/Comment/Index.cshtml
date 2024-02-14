@@ -1,0 +1,59 @@
+﻿@model IEnumerable<PortalOgloszeniowy.Models.Comment>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Index - Comments</h1>
+<div>
+    <span>
+        <a asp-action="Details" asp-controller="Post" asp-route-id="@ViewContext.RouteData.Values["idPost"]">Powrót</a>
+    </span>
+</div>
+<div>
+    <span>
+        <label asp-for="First().Id"></label>
+    </span>
+    <span>
+        <label asp-for="First().Text"></label>
+    </span>
+    <span>
+        <label asp-for="First().Date"></label>
+    </span>
+</div>
+@if (Model != null)
+    @foreach (var comment in Model)
+    {
+        <div>
+            <span>
+                @comment.Id
+            </span>
+            <span>
+                @comment.Text
+            </span>
+            <span>
+                @comment.Date
+            </span>
+            @inject Microsoft.AspNetCore.Identity.SignInManager<PortalOgloszeniowy.Models.User> signInManager
+            @inject Microsoft.AspNetCore.Identity.UserManager<PortalOgloszeniowy.Models.User> userManager
+            @{bool UserIsOwner = userManager.FindByNameAsync(User.Identity.Name).Result.Comments.ToList().Find(com => com.Id == comment.Id) != null;}
+            @if (signInManager.IsSignedIn(User))
+            {
+                <span>
+                    <a asp-action="Report" asp-route-id="@comment.Id" asp-route-IdPost="@ViewContext.RouteData.Values["idPost"]">Zgłoś</a>
+                </span>
+                @if ((UserIsOwner || User.IsInRole("admin") || User.IsInRole("mod")))
+                {
+                    if (UserIsOwner)
+                    {
+                        <span>
+                            <a asp-action="Edit" asp-route-id="@comment.Id" asp-route-IdPost="@ViewContext.RouteData.Values["idPost"]">EDIT</a>
+                        </span>
+                    }
+                    <span>
+                        <a asp-action="Delete" asp-route-id="@comment.Id" asp-route-IdPost="@ViewContext.RouteData.Values["idPost"]">DELETE</a>
+                    </span>
+                }
+            }
+        </div>
+    }

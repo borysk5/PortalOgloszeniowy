@@ -1,0 +1,46 @@
+﻿@model PortalOgloszeniowy.Models.Post
+@{
+    ViewData["Title"] = "Tags";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Tags</h1>
+<div>
+    <span>
+        <a asp-action="Details" asp-controller="Post" asp-route-id="@Model.Id">Powrót</a>
+    </span>
+</div>
+<div asp-validation-summary="All"></div>
+@if (Model != null)
+{
+    @inject Microsoft.AspNetCore.Identity.UserManager<PortalOgloszeniowy.Models.User> Manager;
+    bool isThisUserPost = User != null && Manager.FindByNameAsync(User.Identity.Name).Result.Posts.ToList().Find(p => p.Id == Model.Id) != null;
+    if (isThisUserPost)
+    {
+        <form method="GET" asp-action="TagAdd">
+            <input type="hidden" name="idPost" value="@Model.Id" />
+            @{var tag = new PortalOgloszeniowy.Models.Tag();}
+            <label asp-for="@tag.Text"></label>
+            <input type="text" name="Text" asp-for="@tag.Text" />
+            <span asp-validation-for="@tag.Text"></span>
+            <input type="submit" />
+        </form>
+    }
+
+    foreach (var tag in Model.Tags)
+    {
+        <span>@tag.Id @tag.Text</span>
+        @if (isThisUserPost)
+        {
+            <a asp-action="TagDelete" asp-route-idTag="@tag.Id" asp-route-idPost="@Model.Id">Delete</a>
+        }
+        <span>,</span>
+        <br />
+    }
+}
+
+@section Scripts{
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}

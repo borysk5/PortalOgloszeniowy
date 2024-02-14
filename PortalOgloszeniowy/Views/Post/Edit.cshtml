@@ -1,0 +1,33 @@
+﻿@model PortalOgloszeniowy.Models.Post
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Edit - POST</h1>
+<div>
+    <span>
+        <a asp-action="Details" asp-controller="Post" asp-route-id="@Model.Id">Powrót</a>
+    </span>
+</div>
+@inject Microsoft.AspNetCore.Identity.UserManager<PortalOgloszeniowy.Models.User> Manager
+@if (User != null && (User.IsInRole("Mod") || Manager.FindByNameAsync(User.Identity.Name).Result.Posts.ToList().Find(p => p.Id == Model.Id) != null))
+{
+    <div asp-validation-summary="All"></div>
+    <form method="post" asp-action="Edit">
+        <label asp-for="Title"></label>
+        <input asp-for="Title" />
+        <span asp-validation-for="Title"></span>
+        <label asp-for="Text"></label>
+        <input asp-for="Text" />
+        <span asp-validation-for="Text"></span>
+        <input type="submit" value="Edit" />
+    </form>
+}
+
+@section Scripts{
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}
+

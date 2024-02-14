@@ -1,0 +1,23 @@
+version: '3.7'
+
+services:
+  portal-spolecznosciowy:
+    build: .
+    ports:
+      - "8080:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__DefaultConnection=Server=sql-server,1433;Database=master;User=sa;Password=YourStrong!Passw0rd;
+    depends_on:
+      - sql-server
+    restart: on-failure
+
+  sql-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      SA_PASSWORD: "YourStrong!Passw0rd"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"

@@ -1,0 +1,101 @@
+﻿@model PortalOgloszeniowy.Models.Post
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Details - POSTS</h1>
+<a asp-action="Create">DODAJ</a>
+<div>
+    <span>
+        <label asp-for="Id"></label>
+    </span>
+    <span>
+        <label asp-for="Title"></label>
+    </span>
+    <span>
+        <label asp-for="Text"></label>
+    </span>
+    <span>
+        <label asp-for="UpVotes"></label>
+    </span>
+    <span>
+        <label asp-for="Date"></label>
+    </span>
+    <span>
+        <label asp-for="Tags"></label>
+    </span>
+    <span>
+        <label asp-for="Comments"></label>
+    </span>
+</div>
+@if (Model != null)
+{
+<div>
+    <span>
+        @Model.Id
+    </span>
+    <span>
+        @Model.Title
+    </span>
+    <span>
+        @Model.Text
+    </span>
+    <span>
+        @Model.UpVotes
+    </span>
+    <span>
+        @Model.Date
+    </span>
+    <span>
+        Tagi: 
+        @if (Model.Tags != null)
+            @foreach (var tag in Model.Tags)
+            {
+                @tag.Text
+                @(",")
+            }
+    </span>
+    <span>
+        <a asp-controller="Comment" asp-action="Index" asp-route-id="@Model.Id">Komentarze:</a>
+        @if (Model.Comments != null)
+            @foreach (var tag in Model.Comments)
+            {
+                @tag.Text
+                @(",")
+            }
+    </span>
+    @inject Microsoft.AspNetCore.Identity.SignInManager<PortalOgloszeniowy.Models.User> signInManager
+    @if (signInManager.IsSignedIn(User))
+    {
+        <span>
+            <a asp-controller="Comment" asp-action="Create" asp-route-id="@Model.Id">ADD A COMENT</a>
+        </span>
+        <span>
+            <a asp-action="UpVote" asp-route-id="@Model.Id">Up Vote</a>
+            <span>@Model.UpVotes</span>
+        </span>
+        //DELETE THIS CONDITION IF SLOW LOADING
+        @inject Microsoft.AspNetCore.Identity.UserManager<PortalOgloszeniowy.Models.User> Manager
+        bool IsPostOwner = Manager.FindByNameAsync(User.Identity.Name).Result.Posts.ToList().Find(p => p.Id == Model.Id) != null;
+        @if (User.IsInRole("mod") || User.IsInRole("admin"))
+        {
+            <span>
+                <a asp-action="Delete" asp-route-id="@Model.Id">DELETE POST</a>
+            </span>
+        }
+        @if (IsPostOwner)
+        {
+            <span>
+                <a asp-action="Edit" asp-route-id="@Model.Id">EDIT POST</a>
+            </span>
+            <span>
+                <a asp-controller="Post" asp-action="Tags" asp-route-id="@Model.Id">zarządzaj Tagami</a>
+            </span>
+        }
+        <span>
+            <a asp-action="Report" asp-route-id="@Model.Id">Zgłoś</a>
+        </span>
+    }
+</div>
+}
+

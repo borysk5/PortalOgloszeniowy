@@ -1,0 +1,36 @@
+﻿@model PortalOgloszeniowy.Models.Comment
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Create - COMMENT</h1>
+@if (Model == null)
+{
+    <div>
+        <span>
+            <a asp-action="Details" asp-controller="Post" asp-route-id="@ViewContext.RouteData.Values["idPost"]">Powrót</a>
+        </span>
+    </div>
+}
+else
+{
+    <div>
+        <span>
+            <a asp-action="Index" asp-controller="Comment" asp-route-id="@Model.Id">Powrót</a>
+        </span>
+    </div>
+}
+<div asp-validation-summary="All"></div>
+<form method="post" asp-action="Create">
+    <label asp-for="Text"></label>
+    <input asp-for="Text" />
+    <span asp-validation-for="Text"></span>
+    <input type="submit" value="Create" />
+</form>
+
+@section Scripts{
+    @{
+        <partial name="_ValidationScriptsPartial" />
+    }
+}
